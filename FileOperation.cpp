@@ -3,7 +3,7 @@
 using namespace std;
 
 int main(){
-    ofstream ofile("example.txt");
+    /*ofstream ofile("example.txt");
     if(!ofile){
         cerr<<"Error : Unable to  open `example.txt` for writing."<<endl;
         return 1;
@@ -18,7 +18,10 @@ int main(){
     ifstream ifile("example.txt");
     if(!ifile){
         cerr<<"Error ";
-    }
+    }*/
+   char name[25],c,ch;
+   unsigned attrib;
+   int d;
     
 
 }
