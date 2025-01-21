@@ -80,7 +80,12 @@ void change_dir(){
 			string fn;
 			cout<<"Enter Directory name : ";
 			cin>>fn;
-			chdir(fn.c_str());
+			//chdir(fn.c_str());
+			if (chdir(fn.c_str()) == 0) {
+                cout << "Moved to directory: " << fn << " successfully." << endl;
+            } else {
+                cerr << "Failed to move to directory: " <<  endl;
+            }
 			break;
 		//default:
 		//	break;
