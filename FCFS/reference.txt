@@ -1,0 +1,127 @@
+Sure! To implement **First-Come-First-Served (FCFS)** scheduling using the `queue` container in C++, we can use a `Node` class to represent each process. Each `Node` will store information about the process, such as its **process ID**, **arrival time**, and **burst time**. The processes will be managed in a **queue** based on their arrival time.
+
+Here's an implementation of FCFS scheduling using a `Node` class and the `queue` header in C++:
+
+### C++ Implementation
+
+```cpp
+#include <iostream>
+#include <queue>
+#include <string>
+
+using namespace std;
+
+// Node class to represent a process
+class Node {
+public:
+    int processID;      // Process ID
+    int arrivalTime;    // Arrival time of the process
+    int burstTime;      // Burst time (CPU time required by the process)
+    
+    Node(int pid, int arrival, int burst) {
+        processID = pid;
+        arrivalTime = arrival;
+        burstTime = burst;
+    }
+};
+
+// FCFS Scheduler class
+class FCFS {
+private:
+    queue<Node> processQueue; // Queue to store processes
+
+public:
+    // Function to add a process to the queue
+    void addProcess(int pid, int arrival, int burst) {
+        Node newProcess(pid, arrival, burst);
+        processQueue.push(newProcess);
+    }
+
+    // Function to simulate FCFS scheduling and print the results
+    void schedule() {
+        int currentTime = 0; // To keep track of current time
+        cout << "\nFCFS Scheduling Result:\n";
+        cout << "Process ID | Arrival Time | Burst Time | Completion Time | Turnaround Time | Waiting Time\n";
+        cout << "-----------------------------------------------------------------------\n";
+        
+        while (!processQueue.empty()) {
+            Node currentProcess = processQueue.front();
+            processQueue.pop();
+
+            // Calculate completion time
+            int completionTime = currentTime + currentProcess.burstTime;
+            // Calculate turnaround time (completion time - arrival time)
+            int turnaroundTime = completionTime - currentProcess.arrivalTime;
+            // Calculate waiting time (turnaround time - burst time)
+            int waitingTime = turnaroundTime - currentProcess.burstTime;
+
+            // Print the process details
+            cout << currentProcess.processID << "\t\t"
+                 << currentProcess.arrivalTime << "\t\t"
+                 << currentProcess.burstTime << "\t\t"
+                 << completionTime << "\t\t"
+                 << turnaroundTime << "\t\t"
+                 << waitingTime << endl;
+
+            // Update current time after this process completes
+            currentTime = completionTime;
+        }
+    }
+};
+
+int main() {
+    FCFS scheduler;
+
+    // Adding processes to the scheduler
+    scheduler.addProcess(1, 0, 5);  // Process 1: Arrival Time = 0, Burst Time = 5
+    scheduler.addProcess(2, 1, 3);  // Process 2: Arrival Time = 1, Burst Time = 3
+    scheduler.addProcess(3, 2, 8);  // Process 3: Arrival Time = 2, Burst Time = 8
+    scheduler.addProcess(4, 3, 6);  // Process 4: Arrival Time = 3, Burst Time = 6
+
+    // Simulating FCFS Scheduling
+    scheduler.schedule();
+
+    return 0;
+}
+```
+
+### Explanation:
+
+1. **Node Class**:
+   - This class represents a process with three attributes:
+     - `processID`: The unique identifier for the process.
+     - `arrivalTime`: The time at which the process arrives in the system.
+     - `burstTime`: The amount of CPU time the process requires to execute.
+   - The constructor initializes these attributes when a new `Node` (process) is created.
+
+2. **FCFS Class**:
+   - The `FCFS` class contains a queue (`processQueue`) to store the processes.
+   - The `addProcess` function adds a new process to the queue.
+   - The `schedule` function simulates the **First-Come-First-Served (FCFS)** scheduling. It processes each job in the order it arrives:
+     - It computes the **completion time**, **turnaround time**, and **waiting time** for each process.
+     - The result is displayed in a tabular format.
+     - After processing each process, the `currentTime` is updated to reflect the completion time of the process.
+
+3. **Main Function**:
+   - In the main function, we create an instance of the `FCFS` class and add several processes to the queue with their respective **arrival times** and **burst times**.
+   - The `schedule` function is then called to simulate the scheduling process and display the results.
+
+### Output Example:
+When you run the above program, it will simulate the FCFS scheduling for the given processes and output something like:
+
+```
+FCFS Scheduling Result:
+Process ID | Arrival Time | Burst Time | Completion Time | Turnaround Time | Waiting Time
+-----------------------------------------------------------------------
+1           0            5           5               5                0
+2           1            3           8               7                4
+3           2            8           16              14               6
+4           3            6           22              19               13
+```
+
+### Notes:
+- **Completion Time** is calculated as the time when the process finishes executing.
+- **Turnaround Time** is the total time spent from the arrival to the completion of the process: `Completion Time - Arrival Time`.
+- **Waiting Time** is the total time a process has been waiting before its execution: `Turnaround Time - Burst Time`.
+  
+This program simulates the **FCFS scheduling** algorithm using a **queue** data structure and calculates various performance metrics for each process.

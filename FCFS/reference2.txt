@@ -1,0 +1,152 @@
+Sure! Instead of printing the detailed schedule, we can generate a **Gantt chart** to visualize the **FCFS** scheduling.
+
+A **Gantt chart** is a bar chart that represents the execution of processes over time. Each process is shown as a horizontal bar, where the length of the bar represents the **burst time** (CPU time) of the process, and the position represents the **start time** and **completion time** of the process.
+
+Here's how we can modify the program to display a Gantt chart:
+
+### Modified Program to Display a Gantt Chart:
+
+```cpp
+#include <iostream>
+#include <queue>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// Node class to represent a process
+class Node {
+public:
+    int processID;      // Process ID
+    int arrivalTime;    // Arrival time of the process
+    int burstTime;      // Burst time (CPU time required by the process)
+    
+    Node(int pid, int arrival, int burst) {
+        processID = pid;
+        arrivalTime = arrival;
+        burstTime = burst;
+    }
+};
+
+// FCFS Scheduler class
+class FCFS {
+private:
+    queue<Node> processQueue; // Queue to store processes
+
+public:
+    // Function to add a process to the queue
+    void addProcess(int pid, int arrival, int burst) {
+        Node newProcess(pid, arrival, burst);
+        processQueue.push(newProcess);
+    }
+
+    // Function to simulate FCFS scheduling and print the Gantt chart
+    void ganttChart() {
+        int currentTime = 0; // To keep track of current time
+        vector<int> startTimes;  // Start times of the processes
+        vector<int> endTimes;    // End times (completion times) of the processes
+        vector<int> processIDs;  // Process IDs to display in the Gantt chart
+
+        while (!processQueue.empty()) {
+            Node currentProcess = processQueue.front();
+            processQueue.pop();
+
+            // Calculate completion time
+            int completionTime = currentTime + currentProcess.burstTime;
+
+            // Record the start and end times for the Gantt chart
+            startTimes.push_back(currentTime);
+            endTimes.push_back(completionTime);
+            processIDs.push_back(currentProcess.processID);
+
+            // Update current time after this process completes
+            currentTime = completionTime;
+        }
+
+        // Printing the Gantt Chart
+        cout << "\nGantt Chart for FCFS Scheduling:\n";
+        cout << "------------------------------------------------------\n";
+
+        // Print the top line of the Gantt chart with time slots
+        for (size_t i = 0; i < startTimes.size(); ++i) {
+            cout << "P" << processIDs[i] << " ";
+        }
+        cout << endl;
+
+        // Print the second line showing the start times
+        for (size_t i = 0; i < startTimes.size(); ++i) {
+            cout << startTimes[i] << "  ";
+        }
+        cout << endl;
+
+        // Print the horizontal line
+        cout << "------------------------------------------------------\n";
+
+        // Print the end times (completion times) for each process
+        for (size_t i = 0; i < endTimes.size(); ++i) {
+            cout << endTimes[i] << "  ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    FCFS scheduler;
+
+    // Adding processes to the scheduler (Process ID, Arrival Time, Burst Time)
+    scheduler.addProcess(1, 0, 5);  // Process 1: Arrival Time = 0, Burst Time = 5
+    scheduler.addProcess(2, 1, 3);  // Process 2: Arrival Time = 1, Burst Time = 3
+    scheduler.addProcess(3, 2, 8);  // Process 3: Arrival Time = 2, Burst Time = 8
+    scheduler.addProcess(4, 3, 6);  // Process 4: Arrival Time = 3, Burst Time = 6
+
+    // Displaying the Gantt chart for FCFS scheduling
+    scheduler.ganttChart();
+
+    return 0;
+}
+```
+
+### Explanation of Changes:
+
+1. **Gantt Chart Representation**:
+    - The `ganttChart` function now simulates the **First-Come-First-Served (FCFS)** scheduling and displays a **Gantt chart**.
+    - The `startTimes`, `endTimes`, and `processIDs` vectors store the respective information for each process:
+        - `startTimes`: The starting time for each process.
+        - `endTimes`: The completion time for each process.
+        - `processIDs`: The IDs of the processes.
+        
+2. **Printing the Gantt Chart**:
+    - The Gantt chart is printed with:
+        - The **top row** showing the process IDs in order of execution.
+        - The **second row** displaying the start times of each process.
+        - A **horizontal line** to separate the start and end times.
+        - The **last row** showing the end (completion) times of each process.
+
+### Output Example:
+
+After running the program, you should see an output like this, which visualizes the Gantt chart for the processes:
+
+```
+Gantt Chart for FCFS Scheduling:
+------------------------------------------------------
+P1 P2 P3 P4 
+0  5  8  16  
+------------------------------------------------------
+5  8  16  22  
+```
+
+### Explanation of the Gantt Chart:
+- **Top row**: The processes executed, labeled as `P1`, `P2`, `P3`, `P4`.
+- **Second row**: The **start times** for each process:
+    - `P1` starts at time `0`.
+    - `P2` starts at time `5`.
+    - `P3` starts at time `8`.
+    - `P4` starts at time `16`.
+- **Last row**: The **end times** (completion times) for each process:
+    - `P1` ends at time `5`.
+    - `P2` ends at time `8`.
+    - `P3` ends at time `16`.
+    - `P4` ends at time `22`.
+
+### Notes:
+- The program outputs a **Gantt chart** where each process is represented by its ID, and the chart shows the start and end times for each process in **First-Come-First-Served (FCFS)** order.
