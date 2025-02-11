@@ -1,0 +1,64 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+
+using namespace std;
+
+// Structure to represent a process
+struct Process {
+    int id;         // Process ID
+    int burstTime;  // Burst time (execution time)
+    int arrivalTime; // Arrival time of the process
+    
+    // Constructor to initialize the process
+    Process(int id, int arrivalTime, int burstTime)
+        : id(id), arrivalTime(arrivalTime), burstTime(burstTime) {}
+    
+    // Comparator to order the processes in the priority queue
+    bool operator>(const Process& other) const {
+        return burstTime > other.burstTime;  // Compare burst time for SJF (shortest burst time gets higher priority)
+    }
+};
+
+// Function to implement SJF scheduling
+void sjfScheduling(vector<Process>& processes) {
+    int currentTime = 0;  // Track the current time in the scheduler
+    priority_queue<Process, vector<Process>, greater<Process>> pq;  // Min-heap priority queue to pick the shortest burst time
+
+    int index = 0;
+    while (index < processes.size() || !pq.empty()) {
+        // Add all processes that have arrived at the current time
+        while (index < processes.size() && processes[index].arrivalTime <= currentTime) {
+            pq.push(processes[index]);
+            index++;
+        }
+
+        if (!pq.empty()) {
+            // Get the process with the shortest burst time
+            Process p = pq.top();
+            pq.pop();
+            // Process the current job
+            cout << "Process " << p.id << " started at time " << currentTime << " and finished at time " << currentTime + p.burstTime << endl;
+            currentTime += p.burstTime;  // Update current time after processing the job
+        }
+        else {
+            // If no process is ready to execute, move to the next process's arrival time
+            currentTime = processes[index].arrivalTime;
+        }
+    }
+}
+
+int main() {
+    // Vector of processes
+    vector<Process> processes = {
+        Process(1, 0, 6),  // Process 1 with arrival time 0 and burst time 6
+        Process(2, 2, 8),  // Process 2 with arrival time 2 and burst time 8
+        Process(3, 4, 7),  // Process 3 with arrival time 4 and burst time 7
+        Process(4, 5, 3)   // Process 4 with arrival time 5 and burst time 3
+    };
+
+    // Call the SJF scheduling function
+    sjfScheduling(processes);
+
+    return 0;
+}
