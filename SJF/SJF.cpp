@@ -1,50 +1,51 @@
 #include <iostream>
-#include <queue>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-float n;
-
-class Node {
-    public:
-        int pid,at,bt;
-        Node(int pid,int at,int bt){
-            this->pid = pid;
-            this->at = at;
-            this->bt = bt;
-        }
-};
-
-class SJF{
-    private:
-        priority_queue<Node > processQ;
-    public:
-        void addProcess(int pid,int at,int bt){
-            Node newprocess(pid,at,bt);
-            processQ.push(newprocess);
-        }
-
-        void print(){
-            while(!processQ.empty()){
-                Node p = processQ.top();
-                cout<<p.pid<<"  "<<p.at<<"  "<<p.bt<<endl;
-                processQ.pop();    
-            }
-            
-        }
-        
-};
 
 int main()
 {
-        SJF scheduler;
-        cout<<"Enter the number of jobs : ";
-        cin>>n;
-        int at,bt;
-        for(int i=0 ; i<n;++i){
-            cout<<"Enter Arrival time and Burst time of Process "<<i+1<<" : ";
-            cin>>at>>bt;
-            scheduler.addProcess(i+1,at,bt);
+    int n;
+    float avg=0;
+    vector <int> b,w,a;
+    cout<<"Enter number of process : ";
+    cin>>n;
+    b.resize(n);
+    w.resize(n);
+    a.resize(n);
+
+    cout<<"Enter burst time for corresponding job :- "<<endl;
+    for(int i=0;i<n;++i){
+        cout<<"Process "<<i+1<<" : ";
+        cin>>b[i];
+        a[i]=i+1;
+    }
+    for(int i=0;i<n;++i){
+        for(int j=i+1;j<n;++j){
+            if(b[i]>b[j]){
+                swap(b[i],b[j]);
+                swap(a[i],a[j]);
+            }
         }
-        scheduler.print();
-        //scheduler.ganttchart();
+    }
+    w[0]=0;
+    cout<<"\nProcess "<<a[0]<<" waiting time is 0";
+    for(int i=1;i<n;++i){
+        w[i]=b[i-1]+w[i-1];
+        cout<<"\nProcess "<<a[i]<<" waiting time is "<<w[i];
+        avg+=w[i];
+    }
+
+    cout<<"\nTotal waiting time : "<<avg;
+    cout<<"\nAverage waitinig time : "<<avg/n;
+    cout<<"\tGnatt Chart\n\t****************\n";
+    for(int i=0;i<n;++i){
+        cout<<"|\tP"<<a[i]<<"\t";
+    }
+    cout<<"|\t\n";
+    for(int i=0;i<n;++i)    cout<<w[i]<<"\t  \t";
+    cout<<w[n-1]+b[n-1];
+    return 0;
 }
