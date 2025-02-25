@@ -20,7 +20,7 @@ class RR{
         }
         void gnattchart(){
             float avg= 0;
-            int t=0,tt[20]={0};
+            int t=0,tt[20]={0},e=n-1;
             cout<<"\t\t Gnatt Chart\n\t************************************\n";
             Node temp = readyQ.front();
             while(!readyQ.empty()){
@@ -29,15 +29,16 @@ class RR{
                     cout<<"|\tP"<<temp.pid<<"\t";
                     temp.bt-=s;
                     readyQ.push(temp);
-                    avg+=s;
+                    avg+=s*e;
                     tt[t]=s+tt[t-1];
                 }
                 else{
                     cout<<"|\tP"<<temp.pid<<"\t";
-                    avg+=temp.bt;
+                    avg+=temp.bt*e--;
                     tt[t]=temp.bt+tt[t-1];
                     temp.bt=0;
                 }
+
                 temp = readyQ.front();
                 t++;
             }
