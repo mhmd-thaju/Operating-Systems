@@ -10,7 +10,7 @@ mutex forks[NUM_PHILOSOPHERS];
 
 void philosopher(int i){
     cout<<"Philosopher "<<i+1<<" is thinking "<<endl;
-    this_thread::sleep_for(chrono::seconds(1));
+    this_thread::sleep_for(chrono::seconds((i+3)%5));
     int leftfork = i;
     int rightfork =(i+1)% NUM_PHILOSOPHERS;
     unique_lock <mutex> lockleft(forks[leftfork]);

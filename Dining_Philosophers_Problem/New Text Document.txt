@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+#include <mutex>
+#include <thread>
+#include <chrono>
+#include <random>  // For random number generation
+
+using namespace std;
+
+const int NUM_PHILOSOPHERS = 5;
+mutex forks[NUM_PHILOSOPHERS];
+
+void philosopher(int i) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(0, 1); // 0 or 1 for random fork selection
+
+    while (true) {
+        cout << "Philosopher " << i + 1 << " is thinking" << endl;
+        this_thread::sleep_for(chrono::seconds(1));
+
+        // Randomly select which fork to pick first (left or right)
+        int leftfork = i;
+        int rightfork = (i + 1) % NUM_PHILOSOPHERS;
+        
+        int first_fork = dis(gen); // Randomly pick fork (0 for left, 1 for right)
+        
+        unique_lock<mutex> lockfirst(forks[first_fork == 0 ? leftfork : rightfork]);
+        cout << "Philosopher " << i + 1 << " picked first fork " << (first_fork == 0 ? leftfork : rightfork) << endl;
+
+        unique_lock<mutex> locksecond(forks[first_fork == 0 ? rightfork : leftfork]);
+        cout << "Philosopher " << i + 1 << " picked second fork " << (first_fork == 0 ? rightfork : leftfork) << endl;
+
+        cout << "Philosopher " << i + 1 << " is eating" << endl;
+        this_thread::sleep_for(chrono::seconds(2));
+
+        cout << "Philosopher " << i + 1 << " finished eating and is releasing forks" << endl;
+    }
+}
+
+int main() {
+    vector<thread> philosophers;
+    for (int i = 0; i < NUM_PHILOSOPHERS; ++i) {
+        philosophers.push_back(thread(philosopher, i));
+    }
+
+    for (auto& t : philosophers) {
+        t.join();
+    }
+
+    return 0;
+}
